@@ -1,0 +1,26 @@
+fanlong(樊龙) 13:49:50
+系统预置位查询	SIP	https://ip:port/ptzctrl?cameraid=resID值&ctrlcode=ctrlcod
+系统删除预置位		https://ip:port/ptzctrl?cameraid=resID值&ctrlcode=ctrlcode值&PresetID=值
+系统添加预置位	SIP	https://ip:port/ptzctrl?cameraid=resID值&ctrlcode=ctrlcode值&PresetID=值&IsKeepWatch=值&PresetName=值
+
+系统巡航位查询		https://ip:port/ptzctrl?cameraid=resID值&ctrlcode=ctrlcod
+系统巡航位删除		https://ip:port/ptzctrl?cameraid=resID值&ctrlcode=ctrlcod&CruiseID=值
+系统巡航位添加		https://ip:port/ptzctrl?cameraid=resID值&CruiseID=值&&cruisepath=值&cruiseName=值
+fanlong(樊龙) 13:51:37
+#define 	ADD_PRESET	0x1033	//	添加预置位4147
+#define 	DEL_PRESET	0x1034	//	删除预置位4148
+#define 	GET_PRESET	0x1031	//	查询预置位4145
+#define 	GET_CRUISE	0x1036	//	查询巡航路径4150
+#define 	ADD_CRUISE	0x103A	//	添加巡航4154
+#define 	DEL_CRUISE	0x103B	//	删除巡航4155
+
+
+?cameraid=1&ctrlcode=4147&PresetID=1&PresetName
+
+
+
+https://192.168.5.128:8000/download/2_20170913T10:00:00_20170913T10:00:00.ps
+
+
+
+http://192.168.5.127:8000/videoPath/queryDocument?cameraid=2&endTime=2017-09-20T23:59:59&startTime=2017-09-20T00:00:00
