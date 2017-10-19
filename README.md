@@ -1,8 +1,5 @@
-                                                #学习，积累，分享
-                                                ===============
-                                                
-
-
+学习，积累，分享
+===============
 
 #SpringSecurity+Jws权限控制
 --------------------------
@@ -50,6 +47,7 @@ JWTAuthenticationFilter-doFilterInternal
 
 
 #其他学习随意测试demo
+--------------------
 
 https://github.com/Tairr/demo/tree/master/src/test/java/com/example
 
