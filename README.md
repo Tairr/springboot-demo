@@ -33,5 +33,7 @@ JWTLoginFilter-successfulAuthentication
 JWTAuthenticationFilter-doFilterInternal
 
 
-#主要参考springboot-springsecurity-jwt-demo项目，因为增加了权限到jwt里，做了部分修改
----------------
+#主要参考
+--------
+springboot-springsecurity-jwt-demo 项目，因为增加了权限到jwt里，做了部分修改
+
