@@ -1,11 +1,9 @@
 package com.example.filter;
 
-import com.example.domain.GrantedAuthorityImpl;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * token的校验
@@ -26,23 +23,31 @@ import java.util.ArrayList;
  * 如果校验通过，就认为这是一个取得授权的合法请求
  * @author zhaoxinguo on 2017/9/13.
  */
-
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
+
+    private String jwtHeader;
+    private Long expiration;
+    private String tokenHead;
+    private String secret;
 
     private UserDetailsService userDetailsService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,UserDetailsService userDetailsService) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,UserDetailsService userDetailsService,String jwtHeader,
+     Long expiration, String tokenHead,String secret) {
         super(authenticationManager);
+        this.jwtHeader = jwtHeader;
+        this.expiration = expiration;
+        this.tokenHead = tokenHead;
+        this.secret = secret;
         this.userDetailsService= userDetailsService;
     }
 
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader(jwtHeader);
 
-        if (header == null || !header.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith(tokenHead)) {
             chain.doFilter(request, response);
             return;
         }
@@ -55,12 +60,13 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(jwtHeader);
         if (token != null) {
             // parse the token.
+            //String parseToken = token.replace(tokenHead, "");
             String user = Jwts.parser()
-                    .setSigningKey("MyJwtSecret")
-                    .parseClaimsJws(token.replace("Bearer ", ""))
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token.replace(tokenHead, ""))
                     .getBody()
                     .getSubject();
 

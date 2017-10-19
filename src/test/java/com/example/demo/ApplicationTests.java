@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.example.controller.UserController;
+import com.example.controller.aatopcoder.UserBController;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @SpringApplicationConfiguration(classes = MockServletContext.class) 
@@ -22,7 +22,7 @@ public class ApplicationTests {
  
 	@Before 
 	public void setUp() throws Exception { 
-		mvc = MockMvcBuilders.standaloneSetup(new UserController()).build(); 
+		mvc = MockMvcBuilders.standaloneSetup(new UserBController()).build();
 	} 
  
 	@Test 

@@ -1,7 +1,5 @@
 package com.example;
 
-import com.example.dao.impl.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 
@@ -10,8 +8,6 @@ import org.springframework.boot.SpringApplication;
  */
 public class SpringbootMongodbApplication implements CommandLineRunner {
 
-    @Autowired
-    private CustomerRepository repository;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringbootMongodbApplication.class, args);

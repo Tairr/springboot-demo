@@ -1,8 +1,8 @@
 package com.example.security;
 
 
-import com.example.dao.AccountDao;
-import com.example.domain.Account;
+import com.example.dao.AccountbDao;
+import com.example.domain.Accountb;
 import com.example.domain.GrantedAuthorityImpl;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,24 +12,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-import static java.util.Collections.emptyList;
-
 /**
  * @author zhaoxinguo on 2017/9/13.
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private AccountDao accountDao;
+    private AccountbDao accountDao;
 
     // 通过构造器注入MyUserRepository
-    public UserDetailsServiceImpl(AccountDao accountDao) {
+    public UserDetailsServiceImpl(AccountbDao accountDao) {
         this.accountDao = accountDao;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account myUser = accountDao.findAccountByName(username);
+        Accountb myUser = accountDao.findAccountByName(username);
         if(myUser == null){
             throw new UsernameNotFoundException(username);
         }

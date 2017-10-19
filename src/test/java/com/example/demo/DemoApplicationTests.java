@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.controller.HelloController;
+import com.example.controller.aatopcoder.HelloController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

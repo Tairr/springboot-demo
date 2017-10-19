@@ -1,6 +1,6 @@
 package com.example.filter;
 
-import com.example.domain.Account;
+import com.example.domain.Accountb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,11 +27,24 @@ import java.util.stream.Collectors;
  * successfulAuthentication ：用户成功登录后，这个方法会被调用，我们在这个方法里生成token。
  * @author zhaoxinguo on 2017/9/12.
  */
+
+
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
+
+
+    private String jwtHeader;
+    private Long expiration;
+    private String tokenHead;
+    private String secret;
 
     private AuthenticationManager authenticationManager;
 
-    public JWTLoginFilter(AuthenticationManager authenticationManager) {
+    public JWTLoginFilter(AuthenticationManager authenticationManager,String jwtHeader,
+                          Long expiration, String tokenHead,String secret) {
+        this.jwtHeader = jwtHeader;
+        this.expiration = expiration;
+        this.tokenHead = tokenHead;
+        this.secret = secret;
         this.authenticationManager = authenticationManager;
     }
 
@@ -40,8 +53,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            Account user= new ObjectMapper()
-                    .readValue(req.getInputStream(), Account.class);
+            Accountb user= new ObjectMapper()
+                    .readValue(req.getInputStream(), Accountb.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -60,16 +73,18 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+
+        //将权限放入claims 写到jwt的情况
         Claims claims = Jwts.claims().setSubject(auth.getName());
         claims.put("scopes", auth.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList()));
 
         String token = Jwts.builder()
-                .setSubject(auth.getName())
-                .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
-                .signWith(SignatureAlgorithm.HS512, "MyJwtSecret") //采用什么算法是可以自己选择的，不一定非要采用HS512
+               .setSubject(auth.getName())
+               // .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration ))
+                .signWith(SignatureAlgorithm.HS512, secret) //采用什么算法是可以自己选择的，不一定非要采用HS512
                 .compact();
-        res.addHeader("Authorization", "Bearer " + token);
+        res.addHeader(jwtHeader, tokenHead + token);
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.security;
 
 import com.example.filter.JWTAuthenticationFilter;
 import com.example.filter.JWTLoginFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,6 +26,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${jwt.header}")
+    private String jwtHeader;
+    @Value("${jwt.expiration}")
+    private Long expiration;
+    @Value("${jwt.token.head}")
+    private String tokenHead;
+    @Value("${jwt.secret}")
+    private String secret;
+
     private UserDetailsService userDetailsService;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -41,8 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/ac/signup").permitAll() // 所有 /ac/signup 的POST请求 都放行
                 .anyRequest().authenticated()  // 所有请求需要身份认证
                 .and()
-                .addFilter(new JWTLoginFilter(authenticationManager()))
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(),userDetailsService));
+                .addFilter(new JWTLoginFilter(authenticationManager(),jwtHeader,expiration,tokenHead,secret))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(),userDetailsService,jwtHeader,expiration,tokenHead,secret));
     }
 
     @Override
