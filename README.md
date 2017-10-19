@@ -23,11 +23,11 @@ UserDetailsServiceImpl（implements UserDetailsService ）<br>
 ## 登录流程：
 ---------
 
-JWTLoginFilter-attemptAuthentication
+JWTLoginFilter-attemptAuthentication<br>  
                  ↓
-CustomAuthenticationProvider-authenticate
+CustomAuthenticationProvider-authenticate<br>  
                  ↓
-UserDetailsServiceImpl-loadUserByUsername《CustomAuthenticationProvider的方法authenticate调用》
+UserDetailsServiceImpl-loadUserByUsername《CustomAuthenticationProvider的方法authenticate调用》<br>  
                  ↓
 JWTLoginFilter-successfulAuthentication
 
@@ -41,12 +41,12 @@ JWTLoginFilter-successfulAuthentication
 
 JWT携带权限只需3步：
 
-1.JWTLoginFilter 中 successfulAuthentication 方法将权限信息加入token返回请求方;
+1.JWTLoginFilter 中 successfulAuthentication 方法将权限信息加入token返回请求方;<br>  
 
-2.JWTAuthenticationFilter 中 getAuthentication 方法将权限信息从token解析解析;
+2.JWTAuthenticationFilter 中 getAuthentication 方法将权限信息从token解析解析;<br>  
 
-3.在需要增加权限校验的方法上方加入@PreAuthorize, @PostAuthorize, @Secured等注解，进入请求方法时会自动校验
-（注解使用参考：http://blog.csdn.net/w605283073/article/details/51327182）
+3.在需要增加权限校验的方法上方加入@PreAuthorize, @PostAuthorize, @Secured等注解，进入请求方法时会自动校验<br>  
+（注解使用参考：http://blog.csdn.net/w605283073/article/details/51327182）<br>  
 
 
 ## 拦截需验证请求：
