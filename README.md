@@ -32,6 +32,22 @@ UserDetailsServiceImpl-loadUserByUsername《CustomAuthenticationProvider的方�
 JWTLoginFilter-successfulAuthentication
 
 
+### 10.19更新
+------------
+
+考虑权限数据较多造成token过长，将权限校验更改为验证token后数据库查询验证
+
+******************************************
+
+JWT携带权限只需3步：
+
+1.JWTLoginFilter 中 successfulAuthentication 方法将权限信息加入token返回请求方;
+
+2.JWTAuthenticationFilter 中 getAuthentication 方法将权限信息从token解析解析;
+
+3.在需要增加权限校验的方法上方加入@PreAuthorize, @PostAuthorize, @Secured等注解，进入请求方法时会自动校验
+（注解使用参考：http://blog.csdn.net/w605283073/article/details/51327182）
+
 
 ## 拦截需验证请求：
 --------------
