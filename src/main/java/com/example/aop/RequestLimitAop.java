@@ -13,6 +13,8 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -42,11 +44,15 @@ import java.util.TimerTask;
 @Aspect
 @Order(2)
 public class RequestLimitAop {
+
     private Cache cache;
+    @Autowired
     EhCacheCacheManager ehCacheCacheManager;
+    @Autowired
     HttpServletRequest request;
 
     public String requestLimit(JoinPoint joinPoint) {
+
         Gson gson = new Gson();
         Map<String, String> resultMap = new HashMap<>();
         this.cache = ehCacheCacheManager.getCache("requestLimitCache");
