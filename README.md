@@ -35,5 +35,6 @@ JWTAuthenticationFilter-doFilterInternal
 
 #主要参考
 --------
-springboot-springsecurity-jwt-demo 项目，因为增加了权限到jwt里，做了部分修改
+码云 springboot-springsecurity-jwt-demo 项目
+在此基础，将用户权限放到jwt里，用注解控制方法的访问，做了部分修改
 
