@@ -1,6 +1,7 @@
 package com.example.controller.aatopcoder;
 
 import com.example.annoation.RequestLimit;
+import com.example.config.JwTautil;
 import com.example.domain.Accountb;
 import com.example.service.IAccountbService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,9 @@ public class AccountbController {
     IAccountbService accountService;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    JwTautil jwTautil;
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     @ApiOperation(value = "获取账户列表",notes="")
@@ -62,9 +67,11 @@ public class AccountbController {
 
     @RequestLimit(count = 1,limitTime = 2000)
     @RequestMapping(value = "/signup",method = RequestMethod.POST)
-    public  String postAccount(@RequestBody Map<String, String> map){
+    public  String postAccount(@RequestBody Map<String, String> map,HttpServletRequest request){
+
         Accountb account=new Accountb();
-        account.setPassword(DigestUtils.md5DigestAsHex((map.get("password")).getBytes()));
+ //     account.setPassword(DigestUtils.md5DigestAsHex((map.get("password")).getBytes()));
+        account.setPassword(bCryptPasswordEncoder.encode(map.get("password")));
         account.setName(map.get("name"));
         account.setMoney(2.0);
         int t= accountService.add(account);

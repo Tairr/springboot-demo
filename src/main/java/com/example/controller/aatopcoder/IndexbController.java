@@ -26,4 +26,6 @@ public class IndexbController {
         // return模板文件的名称，对应src/main/resources/templates/index.html
         return "/test";
     }
+
+
 }

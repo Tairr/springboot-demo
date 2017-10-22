@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.DigestUtils;
 
 /**
  * 自定义身份认证验证组件
@@ -20,11 +19,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public CustomAuthenticationProvider(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder){
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public CustomAuthenticationProvider(UserDetailsService userDetailsService){
         this.userDetailsService = userDetailsService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -36,10 +35,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // 认证逻辑
         UserDetails userDetails = userDetailsService.loadUserByUsername(name);
         if(null != userDetails){
-            String encodePassword = DigestUtils.md5DigestAsHex((password).getBytes());
+           // String encodePassword = DigestUtils.md5DigestAsHex((password).getBytes());
+
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
             System.out.println(userDetails.getPassword());
-            System.out.println("==="+encodePassword);
-            if(userDetails.getPassword().equals(encodePassword)){
+            if(bCryptPasswordEncoder.matches(password,userDetails.getPassword())){
 
                 // 生成令牌
                 Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

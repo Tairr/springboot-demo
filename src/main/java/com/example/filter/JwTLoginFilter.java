@@ -1,15 +1,18 @@
 package com.example.filter;
 
+import com.example.config.JwTautil;
 import com.example.domain.Accountb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,25 +31,16 @@ import java.util.stream.Collectors;
  * @author zhaoxinguo on 2017/9/12.
  */
 
+@Component
+public class JwTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+    @Autowired
+    private JwTautil jwTautil;
 
-    private String jwtHeader;
-    private Long expiration;
-    private String tokenHead;
-    private String secret;
-
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JWTLoginFilter(AuthenticationManager authenticationManager,String jwtHeader,
-                          Long expiration, String tokenHead,String secret) {
-        this.jwtHeader = jwtHeader;
-        this.expiration = expiration;
-        this.tokenHead = tokenHead;
-        this.secret = secret;
-        this.authenticationManager = authenticationManager;
-    }
 
     // 接收并解析用户凭证
     @Override
@@ -81,10 +75,16 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = Jwts.builder()
                .setSubject(auth.getName())
                // .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + expiration ))
-                .signWith(SignatureAlgorithm.HS512, secret) //采用什么算法是可以自己选择的，不一定非要采用HS512
+                .setExpiration(new Date(System.currentTimeMillis() + jwTautil.getExpiration() ))
+                .signWith(SignatureAlgorithm.HS512, jwTautil.getSecret()) //采用什么算法是可以自己选择的，不一定非要采用HS512
                 .compact();
-        res.addHeader(jwtHeader, tokenHead + token);
+        res.addHeader(jwTautil.getJwtHeader(), jwTautil.getTokenHead() + token);
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 
 }

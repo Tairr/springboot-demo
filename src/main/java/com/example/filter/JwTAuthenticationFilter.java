@@ -1,6 +1,8 @@
 package com.example.filter;
 
+import com.example.config.JwTautil;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,36 +25,32 @@ import java.io.IOException;
  * 如果校验通过，就认为这是一个取得授权的合法请求
  * @author zhaoxinguo on 2017/9/13.
  */
-public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
-    private String jwtHeader;
-    private Long expiration;
-    private String tokenHead;
-    private String secret;
+@Component
+public class JwTAuthenticationFilter extends BasicAuthenticationFilter {
 
-    private UserDetailsService userDetailsService;
+   @Autowired
+   private JwTautil jwTautil;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,UserDetailsService userDetailsService,String jwtHeader,
-     Long expiration, String tokenHead,String secret) {
+   @Autowired
+   private UserDetailsService userDetailsService;
+
+    public JwTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.jwtHeader = jwtHeader;
-        this.expiration = expiration;
-        this.tokenHead = tokenHead;
-        this.secret = secret;
-        this.userDetailsService= userDetailsService;
     }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(jwtHeader);
+        String header = request.getHeader(jwTautil.getJwtHeader());
 
-        if (header == null || !header.startsWith(tokenHead)) {
+        if (header == null || !header.startsWith(jwTautil.getTokenHead())) {
             chain.doFilter(request, response);
             return;
         }
 
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
@@ -60,21 +58,28 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(jwtHeader);
+        String token = request.getHeader(jwTautil.getJwtHeader());
         if (token != null) {
             // parse the token.
             //String parseToken = token.replace(tokenHead, "");
-            String user = Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token.replace(tokenHead, ""))
-                    .getBody()
-                    .getSubject();
+            try {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user);
+                String user = Jwts.parser()
+                        .setSigningKey(jwTautil.getSecret())
+                        .parseClaimsJws(token.replace(jwTautil.getTokenHead(), ""))
+                        .getBody()
+                        .getSubject();
 
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(user);
+                if (user != null) {
+                    return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                throw  e;
+                //return null;
             }
+
             return null;
         }
         return null;

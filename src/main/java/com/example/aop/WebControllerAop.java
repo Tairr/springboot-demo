@@ -22,7 +22,7 @@ import java.util.Map;
 public class WebControllerAop {
 
     //匹配com.zkn.learnspringboot.web.controller包及其子包下的所有类的所有方法
-    @Pointcut("execution(* com.example.controller..*.*(..))")
+    @Pointcut("execution(* com.example.controller.account.*.*(..))")
     public void executeService(){
 
     }

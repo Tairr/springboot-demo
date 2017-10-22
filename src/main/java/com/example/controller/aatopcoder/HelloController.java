@@ -3,11 +3,13 @@ package com.example.controller.aatopcoder;
 
 import com.example.domain.Teacher;
 import com.example.domain.User;
+import com.example.filter.JwTLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,4 +59,6 @@ public class HelloController {
     public String getUser(){
         return user.getId()+">>"+user.getName()+">>"+user.getAge();
     }
+
+
 }

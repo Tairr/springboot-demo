@@ -13,8 +13,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -45,10 +43,10 @@ import java.util.TimerTask;
 @Order(2)
 public class RequestLimitAop {
 
+
     private Cache cache;
     @Autowired
     EhCacheCacheManager ehCacheCacheManager;
-    @Autowired
     HttpServletRequest request;
 
     public String requestLimit(JoinPoint joinPoint) {
@@ -56,6 +54,8 @@ public class RequestLimitAop {
         Gson gson = new Gson();
         Map<String, String> resultMap = new HashMap<>();
         this.cache = ehCacheCacheManager.getCache("requestLimitCache");
+
+
         Object[] args = joinPoint.getArgs();
 
         for (int i = 0; i < args.length; i++) {
@@ -72,13 +72,14 @@ public class RequestLimitAop {
         String ip = request.getLocalAddr();
         String url = request.getRequestURL().toString();
         String key = "req_limit_".concat(url).concat(ip);
+        System.out.println((cache.get(key)==null)+"===="+cache.get(key));
         if (cache.get(key) == null || ((int) (cache.get(key).get())) == 0) {
             cache.put(key, 1);
         } else {
             int num = (int) cache.get(key).get();
             cache.put(key, num + 1);
         }
-
+        System.out.println((cache.get(key)==null)+"===="+cache.get(key).get());
         MethodSignature ms = (MethodSignature) joinPoint.getSignature();
         Method method = ms.getMethod();
         int limitCount = method.getAnnotation(RequestLimit.class).count();
